@@ -50,7 +50,7 @@ import { MapComponent } from './map/map.component';
     AgmCoreModule.forRoot({
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
-      apiKey: 'AIzaSyBBLzWuYVe9-A9MZeihdlzm4uxjonedYyY'
+      // apiKey: 'AIzaSyBBLzWuYVe9-A9MZeihdlzm4uxjonedYyY'
     }),
     BrowserAnimationsModule,
     BrowserModule,

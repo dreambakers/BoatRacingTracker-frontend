@@ -7,7 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LiveRaceComponent implements OnInit {
 
-  ngOnInit() {
+  items = [];
+
+  constructor() { }
+
+  ngOnInit(): void {
+    for (let index = 0; index < 100; index++) {
+      this.items.push('')
+
+    }
   }
 
 }

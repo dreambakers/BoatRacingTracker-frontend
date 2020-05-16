@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PreviousRacesComponent implements OnInit {
 
+  items = [];
+
   constructor() { }
 
   ngOnInit(): void {
+    for (let index = 0; index < 100; index++) {
+      this.items.push('')
+
+    }
   }
 
 }
