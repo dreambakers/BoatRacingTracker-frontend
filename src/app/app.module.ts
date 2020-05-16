@@ -2,8 +2,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { LiveRaceComponent } from './dashboard/live-race/live-race.component';
+import { PreviousRacesComponent } from './dashboard/previous-races/previous-races.component';
+import { MapComponent } from './map/map.component';
+import { NavbarComponent } from './navbar/navbar.component';
+
 import { AgmCoreModule } from '@agm/core';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatSortModule } from '@angular/material/sort';
@@ -31,10 +39,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { LiveRaceComponent } from './dashboard/live-race/live-race.component';
-import { PreviousRacesComponent } from './dashboard/previous-races/previous-races.component';
-import { MapComponent } from './map/map.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -42,7 +47,8 @@ import { MapComponent } from './map/map.component';
     DashboardComponent,
     LiveRaceComponent,
     PreviousRacesComponent,
-    MapComponent
+    MapComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +87,8 @@ import { MapComponent } from './map/map.component';
     MatPaginatorModule,
     MatSidenavModule,
     MatExpansionModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
