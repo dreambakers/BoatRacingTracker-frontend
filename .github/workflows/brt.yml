@@ -1,0 +1,20 @@
+name: Boat Racing Tracker deployment
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Angular Build
+      uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.1.0
+      with:
+        github_access_token: ${{ secrets.ACCESS_TOKEN }} # see the Configuration section for how you can create secrets
+        build_configuration: production # The build environment for the app. please look configurations in your angular.json
+        base_href: /BoatRacingTracker-frontend/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+        deploy_branch: master # The branch the action should deploy to.
+        build_folder: dist/BoatRacingTracker # The folder where your project is supposed to be after running ng build by the action.

@@ -1,0 +1,29 @@
+<agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="false">
+
+    <!-- <agm-circle
+    [latitude]="flightPlanCoordinates[flightPlanCoordinates.length - 1].lat"
+    [longitude]="flightPlanCoordinates[flightPlanCoordinates.length - 1].lng"
+    [fillOpacity]="0.5" [radius]="100000" ></agm-circle> -->
+
+    <agm-marker
+    title="test"
+     [latitude]="flightPlanCoordinates[flightPlanCoordinates.length - 1].lat"
+     [longitude]="flightPlanCoordinates[flightPlanCoordinates.length - 1].lng"
+     iconUrl="http://www.myiconfinder.com/uploads/iconsets/32-32-d8d329b704d34cf035a25811e32ba733-boat.png">
+   </agm-marker>
+
+
+
+    <agm-polyline
+      strokeColor="red"
+    >
+
+      <agm-polyline-point
+        [latitude]="coordinates.lat"
+        [longitude]="coordinates.lng"
+        *ngFor="let coordinates of flightPlanCoordinates">
+      </agm-polyline-point>
+
+    </agm-polyline>
+
+  </agm-map>
