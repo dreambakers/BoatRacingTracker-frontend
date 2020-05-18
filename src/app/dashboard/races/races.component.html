@@ -1,6 +1,8 @@
 <div class="container-fluid h-100">
     <div class="row h-100">
-        <mat-card class="col-12 col-md-3 overflow-auto h-100 p-0">
+        <mat-card class="col-12 col-md-2 overflow-auto h-100">
+            <h3 class="font-weight-bold">Races</h3>
+
             <mat-list>
                 <ng-container *ngFor="let race of races; let i = index">
                     <mat-list-item>
@@ -10,9 +12,9 @@
                 </ng-container>
             </mat-list>
         </mat-card>
-        <mat-card class="col-12 col-md-9">
-            <div class="row">
-                <mat-card class="col-12 col-md-9">
+        <mat-card class="col-12 col-md-10">
+            <div class="row h-100">
+                <mat-card class="col-12 col-md-9 h-100">
                     <app-map [race]="selectedRace"></app-map>
                 </mat-card>
                 <mat-card class="col-12 col-md-3">
