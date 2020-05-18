@@ -1,14 +1,14 @@
 <div class="container-fluid h-100">
     <div class="row h-100">
         <mat-card class="col-12 col-md-3 overflow-auto h-100 p-0">
-            <mat-selection-list>
-                <ng-container>
-                    <mat-list-option *ngFor="let race of races; let i = index">
+            <mat-list>
+                <ng-container *ngFor="let race of races; let i = index">
+                    <mat-list-item>
                         Race {{ i + 1 }}
-                    </mat-list-option>
+                    </mat-list-item>
                     <mat-divider></mat-divider>
                 </ng-container>
-            </mat-selection-list>
+            </mat-list>
         </mat-card>
         <mat-card class="col-12 col-md-9">
             <div class="row">
@@ -17,11 +17,14 @@
                 </mat-card>
                 <mat-card class="col-12 col-md-3">
                     <h3 class="font-weight-bold">Positions</h3>
+
                     <mat-list>
-                        <mat-list-item *ngFor="let contestant of selectedRace?.contestants">
-                            {{ contestant.name }}
-                        </mat-list-item>
-                        <mat-divider></mat-divider>
+                        <ng-container *ngFor="let contestant of selectedRace?.contestants">
+                            <mat-list-item>
+                                {{ contestant.name }}
+                            </mat-list-item>
+                            <mat-divider></mat-divider>
+                        </ng-container>
                     </mat-list>
                 </mat-card>
             </div>

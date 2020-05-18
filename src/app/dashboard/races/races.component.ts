@@ -5,11 +5,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-previous-races',
-  templateUrl: './previous-races.component.html',
-  styleUrls: ['./previous-races.component.scss']
+  selector: 'app-races',
+  templateUrl: './races.component.html',
+  styleUrls: ['./races.component.scss']
 })
-export class PreviousRacesComponent implements OnInit {
+export class RacesComponent implements OnInit {
 
   races = [];
   selectedRace;

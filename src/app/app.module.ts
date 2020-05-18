@@ -5,8 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { LiveRaceComponent } from './dashboard/live-race/live-race.component';
-import { PreviousRacesComponent } from './dashboard/previous-races/previous-races.component';
+import { RacesComponent } from './dashboard/races/races.component';
 import { MapComponent } from './map/map.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
@@ -45,8 +44,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   declarations: [
     AppComponent,
     DashboardComponent,
-    LiveRaceComponent,
-    PreviousRacesComponent,
+    RacesComponent,
     MapComponent,
     NavbarComponent
   ],
