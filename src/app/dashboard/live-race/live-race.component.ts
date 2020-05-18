@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RaceService } from 'src/app/services/race.service';
 
 @Component({
   selector: 'app-live-race',
@@ -9,13 +10,24 @@ export class LiveRaceComponent implements OnInit {
 
   items = [];
 
-  constructor() { }
+  races = [];
+
+  constructor(private raceService: RaceService) { }
 
   ngOnInit(): void {
-    for (let index = 0; index < 100; index++) {
-      this.items.push('')
 
-    }
+    this.raceService.getRaces().subscribe(
+      (res: any) => {
+        if (res.success) {
+          this.races = res.races;
+        } else {
+          console.log('error getting races');
+        }
+      },
+      err => {
+        console.log('error getting races');
+      }
+    );
   }
 
 }

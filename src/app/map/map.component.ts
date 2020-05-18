@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input
+} from '@angular/core';
 
 @Component({
   selector: 'app-map',
@@ -7,41 +11,71 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MapComponent implements OnInit {
 
-   // google maps zoom level
-   zoom: number = 1;
-   flightPlanCoordinates = [
-     {lat: 37.772, lng: -122.214},
-     {lat: 21.291, lng: -157.821},
-     {lat: -18.142, lng: 178.431},
-     {lat: -27.467, lng: 153.027}
-   ];
-
-
-   ngOnInit(): void {
-     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-     //Add 'implements OnInit' to the class.
-
-     // setInterval(
-     //   () => {
-     //     this.flightPlanCoordinates.push(
-     //       {
-     //         lat: this.flightPlanCoordinates[this.flightPlanCoordinates.length - 1].lat + 20,
-     //         lng: this.flightPlanCoordinates[this.flightPlanCoordinates.length - 1].lng + 20
-     //       }
-     //     );
-     //   }, 5000);
-   }
-
+  // google maps zoom level
+  zoom: number = 16;
    // initial center position for the map
-   lat: number = 51.673858;
-   lng: number = 7.815982;
+  lat: number = 33.662791;
+  lng: number = 72.992535;
 
- }
+  flightPlanCoordinates = [{
+    lat: 33.663266,
+    lng: 72.992237
+  }, {
+    lat: 33.662997,
+    lng: 72.991787
+  }, {
+    lat: 33.662827,
+    lng: 72.991851
+  }, {
+    lat: 33.662625,
+    lng: 72.992017
+  }, {
+    lat: 33.662250,
+    lng: 72.992344
+  }, {
+    lat: 33.662272,
+    lng: 72.992545
+  }, {
+    lat: 33.662384,
+    lng: 72.992835
+  }, {
+    lat: 33.662545,
+    lng: 72.993138
+  }, {
+    lat: 33.662795,
+    lng: 72.993320
+  }, {
+    lat: 33.662971,
+    lng: 72.993202
+  }, {
+    lat: 33.663243,
+    lng: 72.992993
+  }, {
+    lat: 33.663448,
+    lng: 72.992843
+  }, {
+    lat: 33.663432,
+    lng: 72.992569
+  }, {
+    lat: 33.663258,
+    lng: 72.992244
+  }, {
+    lat: 33.663066,
+    lng: 72.991906
+  }];
 
- // just an interface for type safety.
- interface marker {
-   lat: number;
-   lng: number;
-   label?: string;
-   draggable: boolean;
- }
+  @Input() race;
+
+
+  ngOnInit(): void {
+  }
+
+}
+
+// just an interface for type safety.
+interface marker {
+  lat: number;
+  lng: number;
+  label ? : string;
+  draggable: boolean;
+}

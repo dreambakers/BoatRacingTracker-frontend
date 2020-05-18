@@ -3,9 +3,9 @@
         <mat-card class="col-12 col-md-3 overflow-auto h-100 p-0">
             <mat-selection-list>
                 <ng-container>
-                    <mat-list-option >Item 1</mat-list-option>
-                    <mat-divider></mat-divider>
-                    <mat-list-option>Item 2</mat-list-option>
+                    <mat-list-option *ngFor="let race of races; let i = index">
+                        Race {{ i + 1 }}
+                    </mat-list-option>
                     <mat-divider></mat-divider>
                 </ng-container>
             </mat-selection-list>
@@ -13,18 +13,14 @@
         <mat-card class="col-12 col-md-9">
             <div class="row">
                 <mat-card class="col-12 col-md-9">
-                    <app-map></app-map>
+                    <app-map [race]="selectedRace"></app-map>
                 </mat-card>
                 <mat-card class="col-12 col-md-3">
                     <h3 class="font-weight-bold">Positions</h3>
                     <mat-list>
-                        <mat-list-item> Pepper </mat-list-item>
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item> Salt </mat-list-item>
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item> Paprika </mat-list-item>
+                        <mat-list-item *ngFor="let contestant of selectedRace?.contestants">
+                            {{ contestant.name }}
+                        </mat-list-item>
                         <mat-divider></mat-divider>
                     </mat-list>
                 </mat-card>

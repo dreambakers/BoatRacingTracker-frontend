@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { RaceService } from 'src/app/services/race.service';
+import { SocketService } from 'src/app/services/socket.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-previous-races',
@@ -7,15 +11,40 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PreviousRacesComponent implements OnInit {
 
-  items = [];
+  races = [];
+  selectedRace;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
-  constructor() { }
+  constructor(
+    private raceService: RaceService,
+    private socketSerice: SocketService
+  ) { }
 
   ngOnInit(): void {
-    for (let index = 0; index < 100; index++) {
-      this.items.push('')
 
-    }
+    this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((race: any) => {
+      if (this.selectedRace._id === race._id) {
+        this.selectedRace = race;
+      }
+    });
+
+    this.raceService.getRaces().subscribe(
+      (res: any) => {
+        if (res.success) {
+          this.races = res.races;
+          this.selectedRace = this.races[0];
+        } else {
+          console.log('error getting races');
+        }
+      },
+      err => {
+        console.log('error getting races');
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
   }
 
 }
