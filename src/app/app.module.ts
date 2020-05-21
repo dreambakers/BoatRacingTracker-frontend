@@ -52,6 +52,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     BrowserModule,
     AppRoutingModule,
     AgmCoreModule.forRoot({
+      libraries: ['geometry']
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
       // apiKey: 'AIzaSyBBLzWuYVe9-A9MZeihdlzm4uxjonedYyY'

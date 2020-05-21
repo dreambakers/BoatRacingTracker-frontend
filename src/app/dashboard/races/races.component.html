@@ -24,6 +24,7 @@
                         <ng-container *ngFor="let contestant of selectedRace?.contestants">
                             <mat-list-item>
                                 {{ contestant.name }}
+                                {{ calculateDistance(contestant) }} km
                             </mat-list-item>
                             <mat-divider></mat-divider>
                         </ng-container>
