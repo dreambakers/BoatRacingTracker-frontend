@@ -39,6 +39,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { SetupRaceComponent } from './dialogs/setup-race/setup-race.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     DashboardComponent,
     RacesComponent,
     MapComponent,
-    NavbarComponent
+    NavbarComponent,
+    SetupRaceComponent,
   ],
   imports: [
     BrowserModule,
