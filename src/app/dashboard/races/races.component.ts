@@ -5,6 +5,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MapsAPILoader } from '@agm/core';
 import { UtilService } from 'src/app/services/util.service';
+import { EmitterService } from 'src/app/services/emitter.service';
+import { constants } from 'src/app/app.constants';
 
 @Component({
   selector: 'app-races',
@@ -12,6 +14,8 @@ import { UtilService } from 'src/app/services/util.service';
   styleUrls: ['./races.component.scss']
 })
 export class RacesComponent implements OnInit {
+
+  constants = constants;
 
   races = [];
   selectedRace;
@@ -22,7 +26,8 @@ export class RacesComponent implements OnInit {
     private raceService: RaceService,
     private socketSerice: SocketService,
     private mapsAPILoader: MapsAPILoader,
-    private utilService: UtilService
+    private utilService: UtilService,
+    private emitterService: EmitterService
   ) { }
 
   ngOnInit(): void {
@@ -37,17 +42,19 @@ export class RacesComponent implements OnInit {
       }
     });
 
+    this.emitterService.emitter.pipe(takeUntil(this.destroy$)).subscribe((emittedEvent) => {
+      switch (emittedEvent.event) {
+        case this.constants.emitterKeys.raceSetup:
+          this.races.push(emittedEvent.data);
+          return this.selectedRace = this.races[this.races.length - 1];
+      }
+    });
+
     this.raceService.getRaces().subscribe(
       (res: any) => {
         if (res.success) {
           this.races = res.races;
-
           this.selectedRace = this.races[0];
-          // for(let i = 0; i < 100; i ++) {
-          //   this.races.push(this.races[0])
-          //   this.selectedRace.contestants.push(this.selectedRace.contestants[0])
-          // }
-
         } else {
           this.utilService.openSnackBar('Error getting races.');
         }

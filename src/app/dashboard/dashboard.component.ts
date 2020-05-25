@@ -16,11 +16,7 @@ export class DashboardComponent implements OnInit {
   }
 
   setupRace() {
-    this.dialogService.setupRace().subscribe(
-      res => {
-
-      }
-    )
+    this.dialogService.setupRace().subscribe();
   }
 
 }

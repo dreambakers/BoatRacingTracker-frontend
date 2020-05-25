@@ -1,3 +1,9 @@
 .selected {
     background-color: #3f51b51f;
 }
+
+.mobile-expanded-panel {
+    .contestants {
+        width: 100% !important;
+    }
+}
