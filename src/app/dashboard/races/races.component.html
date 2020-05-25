@@ -1,36 +1,47 @@
 <div class="container-fluid h-100">
-    <div class="row h-100">
-        <mat-card class="col-12 col-md-2 overflow-auto h-100">
-            <h3 class="font-weight-bold">Races</h3>
-
-            <mat-list>
-                <ng-container *ngFor="let race of races; let i = index">
-                    <mat-list-item>
-                        Race {{ i + 1 }}
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                </ng-container>
-            </mat-list>
-        </mat-card>
-        <mat-card class="col-12 col-md-10">
-            <div class="row h-100">
-                <mat-card class="col-12 col-md-9 h-100">
-                    <app-map [race]="selectedRace"></app-map>
-                </mat-card>
-                <mat-card class="col-12 col-md-3">
-                    <h3 class="font-weight-bold">Positions</h3>
-
-                    <mat-list>
-                        <ng-container *ngFor="let contestant of selectedRace?.contestants">
-                            <mat-list-item>
-                                {{ contestant.name }}
-                                {{ calculateDistance(contestant) }} km
-                            </mat-list-item>
-                            <mat-divider></mat-divider>
-                        </ng-container>
-                    </mat-list>
-                </mat-card>
-            </div>
-        </mat-card>
+  <div class="row h-100">
+    <div class="col-12 col-md-2 overflow-auto h-100">
+      <mat-card class="min-h-100 p-0">
+        <h3 class="font-weight-bold p-3 border-bottom">Races</h3>
+        <mat-list>
+          <ng-container *ngFor="let race of races; let i = index">
+            <mat-list-item [class.selected]="selectedRace._id === race._id" class="pointer d-flex"
+              (click)="selectRace(race)">
+              <div class="flex-grow-1 text-overflow">
+                {{ race.name }}
+              </div>
+              <div>
+                <app-race-status [race]="race"></app-race-status>
+              </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </ng-container>
+        </mat-list>
+      </mat-card>
     </div>
+    <div class="col-12 col-md-10 h-100">
+      <div class="row h-100">
+        <div class="col-12 col-md-9">
+          <mat-card class="h-100">
+            <app-map [race]="selectedRace"></app-map>
+          </mat-card>
+        </div>
+
+        <div class="col-12 col-md-3 overflow-auto h-100">
+          <mat-card class="min-h-100 p-0">
+            <h3 class="font-weight-bold p-3 border-bottom">Contestants</h3>
+            <mat-list>
+              <ng-container *ngFor="let contestant of selectedRace?.contestants">
+                <mat-list-item>
+                  {{ contestant.name }}
+                  {{ calculateDistance(contestant) }} km
+                </mat-list-item>
+                <mat-divider></mat-divider>
+              </ng-container>
+            </mat-list>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

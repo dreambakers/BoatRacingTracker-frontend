@@ -15,3 +15,21 @@ body {
 .mat-dialog-actions {
     justify-content: flex-end;
 }
+
+.min-h-100 {
+    min-height: 100%;
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.mat-list-item-content {
+    width: 100% !important;
+}
+
+.text-overflow {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

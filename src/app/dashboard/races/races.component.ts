@@ -4,6 +4,7 @@ import { SocketService } from 'src/app/services/socket.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MapsAPILoader } from '@agm/core';
+import { UtilService } from 'src/app/services/util.service';
 
 @Component({
   selector: 'app-races',
@@ -20,7 +21,8 @@ export class RacesComponent implements OnInit {
   constructor(
     private raceService: RaceService,
     private socketSerice: SocketService,
-    private mapsAPILoader: MapsAPILoader
+    private mapsAPILoader: MapsAPILoader,
+    private utilService: UtilService
   ) { }
 
   ngOnInit(): void {
@@ -39,13 +41,19 @@ export class RacesComponent implements OnInit {
       (res: any) => {
         if (res.success) {
           this.races = res.races;
+
           this.selectedRace = this.races[0];
+          // for(let i = 0; i < 100; i ++) {
+          //   this.races.push(this.races[0])
+          //   this.selectedRace.contestants.push(this.selectedRace.contestants[0])
+          // }
+
         } else {
-          console.log('error getting races');
+          this.utilService.openSnackBar('Error getting races.');
         }
       },
       err => {
-        console.log('error getting races');
+        this.utilService.openSnackBar('Error getting races.');
       }
     );
   }
@@ -60,6 +68,10 @@ export class RacesComponent implements OnInit {
       }
       return (distance / 1000).toFixed(2);
     }
+  }
+
+  selectRace(race) {
+    this.selectedRace = race;
   }
 
   ngOnDestroy(): void {
