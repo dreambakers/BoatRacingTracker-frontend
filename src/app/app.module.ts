@@ -41,6 +41,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     NavbarComponent,
     SetupRaceComponent,
     RaceStatusComponent,
+    ConfirmComponent,
   ],
   imports: [
     BrowserModule,
