@@ -1,36 +1,91 @@
 <div class="container-fluid h-100">
-    <div class="row h-100">
-        <mat-card class="col-12 col-md-2 overflow-auto h-100">
-            <h3 class="font-weight-bold">Races</h3>
-
-            <mat-list>
-                <ng-container *ngFor="let race of races; let i = index">
-                    <mat-list-item>
-                        Race {{ i + 1 }}
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                </ng-container>
-            </mat-list>
-        </mat-card>
-        <mat-card class="col-12 col-md-10">
-            <div class="row h-100">
-                <mat-card class="col-12 col-md-9 h-100">
-                    <app-map [race]="selectedRace"></app-map>
-                </mat-card>
-                <mat-card class="col-12 col-md-3">
-                    <h3 class="font-weight-bold">Positions</h3>
-
-                    <mat-list>
-                        <ng-container *ngFor="let contestant of selectedRace?.contestants">
-                            <mat-list-item>
-                                {{ contestant.name }}
-                                {{ calculateDistance(contestant) }} km
-                            </mat-list-item>
-                            <mat-divider></mat-divider>
-                        </ng-container>
-                    </mat-list>
-                </mat-card>
+  <div class="d-flex h-100">
+    <div class="flex-fill overflow-auto h-100">
+      <mat-card class="min-h-100 p-0">
+        <h3 class="font-weight-bold p-3 border-bottom">Races</h3>
+        <mat-list>
+          <ng-container *ngFor="let race of races; let i = index">
+            <mat-list-item [class.selected]="selectedRace._id === race._id" class="pointer d-flex"
+              (click)="selectRace(race)">
+              <div class="flex-grow-1 text-overflow">
+                {{ race.name }}
+              </div>
+              <app-race-status [race]="race"></app-race-status>
+            </mat-list-item>
+            <div class="d-md-none p-2 mobile-expanded-panel selected" *ngIf="selectedRace._id === race._id">
+              <ng-container *ngTemplateOutlet="raceDetails"></ng-container>
             </div>
-        </mat-card>
+            <mat-divider></mat-divider>
+          </ng-container>
+        </mat-list>
+      </mat-card>
     </div>
+
+    <div class="d-none d-md-block w-75">
+      <ng-container *ngTemplateOutlet="raceDetails"></ng-container>
+    </div>
+  </div>
 </div>
+
+<ng-template #raceDetails>
+
+  <div class="h-100 d-flex flex-column">
+    <div class="px-2 pb-2">
+      <mat-card class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <div class="d-flex">
+          <div class="p-2" [class.border-right]="selectedRace?.startedAt">
+            <span class="font-weight-bold">Created: </span>
+            {{ getParsedDate(selectedRace?.createdAt) }}
+          </div>
+          <div class="p-2" *ngIf="selectedRace?.startedAt">
+            <span class="font-weight-bold">Started: </span>
+            {{ getParsedDate(selectedRace.startedAt) }}
+          </div>
+        </div>
+
+        <div>
+          <button mat-icon-button *ngIf="canRemove" (click)="deleteRace(selectedRace)">
+            <mat-icon class="pointer text-danger">
+              remove_circle
+            </mat-icon>
+          </button>
+          <button mat-icon-button *ngIf="canStop" (click)="stopRace(selectedRace)">
+            <mat-icon class="pointer text-danger">
+              cancel
+            </mat-icon>
+          </button>
+          <button mat-icon-button *ngIf="canStart" (click)="startRace(selectedRace)">
+            <mat-icon class="pointer text-primary">
+              play_circle_filled
+            </mat-icon>
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="flex-fill">
+      <div class="d-flex flex-column flex-md-row h-100">
+        <div class="flex-fill p-2">
+          <mat-card style="min-height: 100%; height: 500px">
+            <app-map [race]="selectedRace"></app-map>
+          </mat-card>
+        </div>
+
+        <div class="w-25 contestants overflow-auto h-100 p-2">
+          <mat-card class="min-h-100 p-0">
+            <h3 class="font-weight-bold p-3 border-bottom">Contestants</h3>
+            <mat-list>
+              <ng-container *ngFor="let contestant of selectedRace?.contestants">
+                <mat-list-item>
+                  {{ contestant.name }}
+                  {{ calculateDistance(contestant) }} km
+                </mat-list-item>
+                <mat-divider></mat-divider>
+              </ng-container>
+            </mat-list>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

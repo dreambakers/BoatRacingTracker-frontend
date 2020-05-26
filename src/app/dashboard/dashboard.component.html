@@ -1,6 +1,9 @@
 <div class="h-100 d-flex flex-column">
     <app-navbar></app-navbar>
-    <div class="flex-fill">
+    <div class="d-flex justify-content-end p-2">
+     <button mat-raised-button color="primary" (click)="setupRace()">Setup new race</button>
+    </div>
+    <div class="flex-fill overflow-hidden">
        <app-races></app-races>
     </div>
 </div>

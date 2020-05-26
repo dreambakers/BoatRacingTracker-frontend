@@ -66,7 +66,6 @@ export class MapComponent implements OnInit {
 
   @Input() race;
 
-
   ngOnInit(): void {
   }
 

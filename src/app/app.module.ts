@@ -8,6 +8,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RacesComponent } from './dashboard/races/races.component';
 import { MapComponent } from './map/map.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { SetupRaceComponent } from './dialogs/setup-race/setup-race.component';
+import { RaceStatusComponent } from './common/race-status/race-status.component';
 
 import { AgmCoreModule } from '@agm/core';
 
@@ -39,6 +41,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     DashboardComponent,
     RacesComponent,
     MapComponent,
-    NavbarComponent
+    NavbarComponent,
+    SetupRaceComponent,
+    RaceStatusComponent,
+    ConfirmComponent,
   ],
   imports: [
     BrowserModule,
