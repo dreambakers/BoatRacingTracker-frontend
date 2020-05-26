@@ -6,7 +6,7 @@ export const constants = {
     raceStatus: {
         waiting: 'waiting',
         inProgress: 'inProgress',
-        finished: 'finshed'
+        finished: 'finished'
     },
     emitterKeys: {
         raceSetup: 'raceSetup'

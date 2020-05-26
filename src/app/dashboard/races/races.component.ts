@@ -7,6 +7,7 @@ import { MapsAPILoader } from '@agm/core';
 import { UtilService } from 'src/app/services/util.service';
 import { EmitterService } from 'src/app/services/emitter.service';
 import { constants } from 'src/app/app.constants';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-races',
@@ -16,7 +17,6 @@ import { constants } from 'src/app/app.constants';
 export class RacesComponent implements OnInit {
 
   constants = constants;
-
   races = [];
   selectedRace;
   mapsLoaded = false;
@@ -79,6 +79,87 @@ export class RacesComponent implements OnInit {
 
   selectRace(race) {
     this.selectedRace = race;
+  }
+
+  getParsedDate(date) {
+    if (date) {
+      return moment(date).format('YYYY-MM-DD, HH:mm')
+    }
+    return '-'
+  }
+
+  startRace(race) {
+    this.raceService.start(race._id).subscribe(
+      (res: any) => {
+        if (res.success) {
+          const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
+          this.races[selectedRaceIndex] = res.race;
+          this.selectedRace = this.races[selectedRaceIndex];
+          return this.utilService.openSnackBar('Race started.');
+        }
+        this.utilService.openSnackBar('An error occurred while starting the race.');
+      },
+      err => {
+        this.utilService.openSnackBar('An error occurred while starting the race.');
+      }
+    );
+  }
+
+  stopRace(race) {
+    this.raceService.stop(race._id).subscribe(
+      (res: any) => {
+        if (res.success) {
+          const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
+          this.races[selectedRaceIndex] = res.race;
+          this.selectedRace = this.races[selectedRaceIndex];
+          return this.utilService.openSnackBar('Race stopped.');
+        }
+        this.utilService.openSnackBar('An error occurred while stopping the race.');
+      },
+      err => {
+        this.utilService.openSnackBar('An error occurred while stopping the race.');
+      }
+    );
+  }
+
+  deleteRace(race) {
+    this.raceService.delete(race._id).subscribe(
+      (res: any) => {
+        if (res.success) {
+          this.races = this.races.filter(_race => _race._id !== race._id);
+          this.selectedRace = this.races[0];
+          return this.utilService.openSnackBar('Race deleted.');
+        }
+        this.utilService.openSnackBar('An error occurred while deleting the race.');
+      },
+      err => {
+        this.utilService.openSnackBar('An error occurred while deleting the race.');
+      }
+    );
+  }
+
+  get canRemove() {
+    if (this.selectedRace) {
+      return [
+        constants.raceStatus.finished,
+        constants.raceStatus.waiting
+      ].includes(this.selectedRace.status);
+    }
+    return false;
+  }
+
+  get canStop() {
+    if (this.selectedRace) {
+      return this.selectedRace.status === this.constants.raceStatus.inProgress;
+    }
+    return false;
+  }
+
+  get canStart() {
+    if (this.selectedRace) {
+      return this.selectedRace.status === this.constants.raceStatus.waiting;
+    }
+    return false;
   }
 
   ngOnDestroy(): void {
