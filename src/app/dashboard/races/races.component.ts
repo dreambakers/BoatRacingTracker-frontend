@@ -19,6 +19,7 @@ export class RacesComponent implements OnInit {
 
   constants = constants;
   races = [];
+  show = true;
   selectedRace;
   mapsLoaded = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
@@ -80,7 +81,11 @@ export class RacesComponent implements OnInit {
   }
 
   selectRace(race) {
+    this.show = false;
     this.selectedRace = race;
+    setTimeout(() => {
+      this.show = true;
+    }, 1);
   }
 
   getParsedDate(date) {
