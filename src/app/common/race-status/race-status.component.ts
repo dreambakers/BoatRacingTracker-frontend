@@ -29,4 +29,17 @@ export class RaceStatusComponent implements OnInit {
     }
   }
 
+  getBadgeType() {
+    if (this.race) {
+      switch (this.race.status) {
+        case this.constants.raceStatus.waiting:
+          return 'badge-secondary'
+        case this.constants.raceStatus.inProgress:
+          return 'badge-success'
+        case this.constants.raceStatus.finished:
+          return 'badge-primary'
+      }
+    }
+  }
+
 }
