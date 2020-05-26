@@ -8,6 +8,7 @@ import { UtilService } from 'src/app/services/util.service';
 import { EmitterService } from 'src/app/services/emitter.service';
 import { constants } from 'src/app/app.constants';
 import * as moment from 'moment';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-races',
@@ -27,7 +28,8 @@ export class RacesComponent implements OnInit {
     private socketSerice: SocketService,
     private mapsAPILoader: MapsAPILoader,
     private utilService: UtilService,
-    private emitterService: EmitterService
+    private emitterService: EmitterService,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit(): void {
@@ -89,51 +91,78 @@ export class RacesComponent implements OnInit {
   }
 
   startRace(race) {
-    this.raceService.start(race._id).subscribe(
-      (res: any) => {
-        if (res.success) {
-          const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
-          this.races[selectedRaceIndex] = res.race;
-          this.selectedRace = this.races[selectedRaceIndex];
-          return this.utilService.openSnackBar('Race started.');
+    this.dialogService.confirm(
+      'Are you sure?',
+      'This will start the selected race'
+    ).subscribe(
+      res => {
+        if (res) {
+          this.raceService.start(race._id).subscribe(
+            (res: any) => {
+              if (res.success) {
+                const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
+                this.races[selectedRaceIndex] = res.race;
+                this.selectedRace = this.races[selectedRaceIndex];
+                return this.utilService.openSnackBar('Race started.');
+              }
+              this.utilService.openSnackBar('An error occurred while starting the race.');
+            },
+            err => {
+              this.utilService.openSnackBar('An error occurred while starting the race.');
+            }
+          );
         }
-        this.utilService.openSnackBar('An error occurred while starting the race.');
-      },
-      err => {
-        this.utilService.openSnackBar('An error occurred while starting the race.');
       }
     );
   }
 
   stopRace(race) {
-    this.raceService.stop(race._id).subscribe(
-      (res: any) => {
-        if (res.success) {
-          const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
-          this.races[selectedRaceIndex] = res.race;
-          this.selectedRace = this.races[selectedRaceIndex];
-          return this.utilService.openSnackBar('Race stopped.');
+    this.dialogService.confirm(
+      'Are you sure?',
+      'This will stop the selected race'
+    ).subscribe(
+      res => {
+        if (res) {
+          this.raceService.stop(race._id).subscribe(
+            (res: any) => {
+              if (res.success) {
+                const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
+                this.races[selectedRaceIndex] = res.race;
+                this.selectedRace = this.races[selectedRaceIndex];
+                return this.utilService.openSnackBar('Race stopped.');
+              }
+              this.utilService.openSnackBar('An error occurred while stopping the race.');
+            },
+            err => {
+              this.utilService.openSnackBar('An error occurred while stopping the race.');
+            }
+          );
         }
-        this.utilService.openSnackBar('An error occurred while stopping the race.');
-      },
-      err => {
-        this.utilService.openSnackBar('An error occurred while stopping the race.');
       }
     );
   }
 
   deleteRace(race) {
-    this.raceService.delete(race._id).subscribe(
-      (res: any) => {
-        if (res.success) {
-          this.races = this.races.filter(_race => _race._id !== race._id);
-          this.selectedRace = this.races[0];
-          return this.utilService.openSnackBar('Race deleted.');
+    this.dialogService.confirm(
+      'Are you sure?',
+      'This will delete the selected race'
+    ).subscribe(
+      res => {
+        if (res) {
+          this.raceService.delete(race._id).subscribe(
+            (res: any) => {
+              if (res.success) {
+                this.races = this.races.filter(_race => _race._id !== race._id);
+                this.selectedRace = this.races[0];
+                return this.utilService.openSnackBar('Race deleted.');
+              }
+              this.utilService.openSnackBar('An error occurred while deleting the race.');
+            },
+            err => {
+              this.utilService.openSnackBar('An error occurred while deleting the race.');
+            }
+          );
         }
-        this.utilService.openSnackBar('An error occurred while deleting the race.');
-      },
-      err => {
-        this.utilService.openSnackBar('An error occurred while deleting the race.');
       }
     );
   }
