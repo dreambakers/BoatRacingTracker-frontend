@@ -197,7 +197,7 @@ export class RacesComponent implements OnInit {
 
   get canStart() {
     if (this.selectedRace) {
-      return this.selectedRace.status === this.constants.raceStatus.waiting;
+      return this.selectedRace.status === this.constants.raceStatus.waiting && this.selectedRace.contestants.length;
     }
     return false;
   }

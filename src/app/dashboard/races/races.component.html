@@ -44,17 +44,17 @@
         </div>
 
         <div>
-          <button mat-icon-button *ngIf="canRemove" (click)="deleteRace(selectedRace)">
+          <button mat-icon-button *ngIf="canRemove" (click)="deleteRace(selectedRace)" matTooltip="Delete race">
             <mat-icon class="pointer text-danger">
               remove_circle
             </mat-icon>
           </button>
-          <button mat-icon-button *ngIf="canStop" (click)="stopRace(selectedRace)">
+          <button mat-icon-button *ngIf="canStop" (click)="stopRace(selectedRace)" matTooltip="Stop race">
             <mat-icon class="pointer text-danger">
-              cancel
+              flag
             </mat-icon>
           </button>
-          <button mat-icon-button *ngIf="canStart" (click)="startRace(selectedRace)">
+          <button mat-icon-button *ngIf="canStart" (click)="startRace(selectedRace)" matTooltip="Start race">
             <mat-icon class="pointer text-primary">
               play_circle_filled
             </mat-icon>
@@ -67,7 +67,12 @@
       <div class="d-flex flex-column flex-md-row h-100">
         <div class="flex-fill p-2">
           <mat-card style="min-height: 100%; height: 500px">
-            <app-map [race]="selectedRace" *ngIf="selectedRace && show"></app-map>
+            <app-map [race]="selectedRace" *ngIf="selectedRace && show && selectedRace.contestants.length; else noContestants"></app-map>
+            <ng-template #noContestants>
+              <div class="d-flex justify-content-center align-items-center h-100">
+                The map will become availble once the contestants have joined.
+              </div>
+            </ng-template>
           </mat-card>
         </div>
 
@@ -86,6 +91,12 @@
                 </mat-list-item>
                 <mat-divider></mat-divider>
               </ng-container>
+              <div class="d-flex justify-content-center flex-column align-items-center" *ngIf="selectedRace?.contestants.length === 0">
+                <mat-spinner ></mat-spinner>
+                <div class="font-italic mt-2">
+                  Waiting for contestants to join...
+                </div>
+              </div>
             </mat-list>
           </mat-card>
         </div>

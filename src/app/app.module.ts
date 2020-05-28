@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -10,10 +12,9 @@ import { MapComponent } from './map/map.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SetupRaceComponent } from './dialogs/setup-race/setup-race.component';
 import { RaceStatusComponent } from './common/race-status/race-status.component';
+import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 
 import { AgmCoreModule } from '@agm/core';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,10 +39,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ConfirmComponent } from './dialogs/confirm/confirm.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -93,7 +93,8 @@ import { ConfirmComponent } from './dialogs/confirm/confirm.component';
     MatSidenavModule,
     MatExpansionModule,
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
