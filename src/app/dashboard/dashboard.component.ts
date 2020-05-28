@@ -15,8 +15,4 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  setupRace() {
-    this.dialogService.setupRace().subscribe();
-  }
-
 }
