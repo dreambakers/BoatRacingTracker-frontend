@@ -21,7 +21,7 @@
       </mat-card>
     </div>
 
-    <div class="d-none d-md-block w-75">
+    <div class="d-none d-md-block w-80">
       <ng-container *ngTemplateOutlet="raceDetails"></ng-container>
     </div>
   </div>
@@ -76,9 +76,13 @@
             <h3 class="font-weight-bold p-3 border-bottom">Contestants</h3>
             <mat-list>
               <ng-container *ngFor="let contestant of selectedRace?.contestants">
-                <mat-list-item>
-                  {{ contestant.name }}
-                  {{ calculateDistance(contestant) }} km
+                <mat-list-item class="d-flex">
+                  <div class="flex-grow-1 text-overflow">
+                    {{ contestant.name }}
+                  </div>
+                  <div>
+                    {{ calculateDistance(contestant) }} km
+                  </div>
                 </mat-list-item>
                 <mat-divider></mat-divider>
               </ng-container>

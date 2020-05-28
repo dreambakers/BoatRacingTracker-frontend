@@ -70,21 +70,28 @@ export class RacesComponent implements OnInit {
   calculateDistance(contestant) {
     if (this.mapsLoaded) {
       let distance = 0;
-      for (let i = 0; i < contestant.locationHistory.length - 2; i ++) {
-        const point1 = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
-        const point2 = new google.maps.LatLng(contestant.locationHistory[i + 1].lat, contestant.locationHistory[i + 1].lng);
-        distance += google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
+      let currentPoint;
+      for (let i = 0; i < contestant.locationHistory.length; i ++) {
+        if (currentPoint) {
+          const nextPoint = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
+          distance += google.maps.geometry.spherical.computeDistanceBetween(currentPoint, nextPoint);
+          currentPoint = nextPoint;
+        } else {
+          currentPoint = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
+        }
       }
       return (distance / 1000).toFixed(2);
     }
   }
 
   selectRace(race) {
-    this.show = false;
-    this.selectedRace = race;
-    setTimeout(() => {
-      this.show = true;
-    }, 1);
+    if (this.selectedRace._id !== race._id) {
+      this.show = false;
+      this.selectedRace = race;
+      setTimeout(() => {
+        this.show = true;
+      }, 1);
+    }
   }
 
   getParsedDate(date) {
