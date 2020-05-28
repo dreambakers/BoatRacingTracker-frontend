@@ -40,9 +40,8 @@ export class RacesComponent implements OnInit {
     });
 
     this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((race: any) => {
-      if (this.selectedRace._id === race._id) {
-        this.selectedRace = race;
-      }
+      const raceToUpdateIndex = this.races.findIndex(_race => _race._id === race._id);
+      this.races[raceToUpdateIndex] = race;
     });
 
     this.emitterService.emitter.pipe(takeUntil(this.destroy$)).subscribe((emittedEvent) => {

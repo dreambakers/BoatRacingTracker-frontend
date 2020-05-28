@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { SocketService } from './services/socket.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -8,14 +6,9 @@ import { SocketService } from './services/socket.service';
 })
 export class AppComponent  {
 
-  constructor(private socketService: SocketService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.socketService.listen('test').subscribe(
-      res => {
-        console.log(res);
-      }
-    )
   }
 }
