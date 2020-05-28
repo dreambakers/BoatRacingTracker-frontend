@@ -21,7 +21,6 @@ export class RacesComponent implements OnInit {
   races = [];
   show = true;
   selectedRace;
-  mapsLoaded = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -35,13 +34,18 @@ export class RacesComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.mapsAPILoader.load().then(() => {
-      this.mapsLoaded = true;
-    });
-
     this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((race: any) => {
-      const raceToUpdateIndex = this.races.findIndex(_race => _race._id === race._id);
-      this.races[raceToUpdateIndex] = race;
+      const updatedRace = race;
+      updatedRace.contestants.forEach(
+        contestant => {
+          this.calculateDistance(contestant);
+        }
+      );
+      const raceToUpdateIndex = this.races.findIndex(_race => _race._id === updatedRace._id);
+      this.races[raceToUpdateIndex] = updatedRace;
+      if (this.selectedRace._id === updatedRace._id) {
+        this.selectedRace = updatedRace;
+      }
     });
 
     this.emitterService.emitter.pipe(takeUntil(this.destroy$)).subscribe((emittedEvent) => {
@@ -57,6 +61,17 @@ export class RacesComponent implements OnInit {
         if (res.success) {
           this.races = res.races;
           this.selectedRace = this.races[0];
+          this.mapsAPILoader.load().then(() => {
+            this.races.forEach(
+              race => {
+                race.contestants.forEach(
+                  contestant => {
+                    this.calculateDistance(contestant);
+                  }
+                );
+              }
+            );
+          });
         } else {
           this.utilService.openSnackBar('Error getting races.');
         }
@@ -68,20 +83,19 @@ export class RacesComponent implements OnInit {
   }
 
   calculateDistance(contestant) {
-    if (this.mapsLoaded) {
-      let distance = 0;
-      let currentPoint;
-      for (let i = 0; i < contestant.locationHistory.length; i ++) {
-        if (currentPoint) {
-          const nextPoint = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
-          distance += google.maps.geometry.spherical.computeDistanceBetween(currentPoint, nextPoint);
-          currentPoint = nextPoint;
-        } else {
-          currentPoint = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
-        }
+    let distance = 0;
+    let currentPoint;
+    for (let i = 0; i < contestant.locationHistory.length; i ++) {
+      if (currentPoint) {
+        const nextPoint = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
+        distance += google.maps.geometry.spherical.computeDistanceBetween(currentPoint, nextPoint);
+        currentPoint = nextPoint;
+      } else {
+        currentPoint = new google.maps.LatLng(contestant.locationHistory[i].lat, contestant.locationHistory[i].lng);
       }
-      return (distance / 1000).toFixed(2);
     }
+    distance = + (distance / 1000).toFixed(2);
+    contestant['distance'] = distance;
   }
 
   selectRace(race) {
@@ -176,6 +190,15 @@ export class RacesComponent implements OnInit {
         }
       }
     );
+  }
+
+  getSortedContestants() {
+    if (this.selectedRace) {
+      this.selectedRace.contestants.sort((a, b) => {
+        return b.distance - a.distance;
+      });
+      return this.selectedRace.contestants;
+    }
   }
 
   get canRemove() {
