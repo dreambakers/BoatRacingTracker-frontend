@@ -4,14 +4,33 @@
       <mat-card class="min-h-100 p-0">
         <h3 class="font-weight-bold p-3 border-bottom">Races</h3>
         <mat-list>
-          <ng-container *ngFor="let race of races; let i = index">
+          <ng-container *ngFor="let race of filteredRaces; let i = index">
             <mat-list-item [class.selected]="selectedRace._id === race._id" class="pointer d-flex"
               (click)="selectRace(race)">
-              <div class="flex-grow-1 text-overflow">
+              <div class="flex-grow-1 text-overflow d-flex align-items-center">
+                <mat-icon *ngIf="race.legs?.length">
+                  {{ race.expanded ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
                 {{ race.name }}
               </div>
               <app-race-status [race]="race"></app-race-status>
             </mat-list-item>
+
+            <div class="submenu" [ngClass]="{'expanded' : race.expanded}" *ngIf="race.expanded">
+              <ng-container *ngFor="let leg of race.legs">
+                <mat-list-item [class.selected]="selectedRace._id === leg._id" class="pointer d-flex"
+                  (click)="selectRace(leg)">
+                  <div class="flex-grow-1 text-overflow d-flex align-items-center" style="padding-left: 30px;">
+                    {{ leg.name }}
+                  </div>
+                  <app-race-status [race]="leg"></app-race-status>
+                </mat-list-item>
+                <div class="d-md-none p-2 mobile-expanded-panel selected" *ngIf="selectedRace._id === leg._id">
+                  <ng-container *ngTemplateOutlet="raceDetails"></ng-container>
+                </div>
+              </ng-container>
+            </div>
+
             <div class="d-md-none p-2 mobile-expanded-panel selected" *ngIf="selectedRace._id === race._id">
               <ng-container *ngTemplateOutlet="raceDetails"></ng-container>
             </div>
@@ -67,7 +86,8 @@
       <div class="d-flex flex-column flex-md-row h-100">
         <div class="flex-fill p-2">
           <mat-card style="min-height: 100%; height: 500px">
-            <app-map [race]="selectedRace" *ngIf="selectedRace && show && selectedRace.contestants.length; else noContestants"></app-map>
+            <app-map [race]="selectedRace"
+              *ngIf="selectedRace && show && selectedRace.contestants.length; else noContestants"></app-map>
             <ng-template #noContestants>
               <div class="d-flex justify-content-center align-items-center h-100">
                 The map will become available once the contestants have joined.
@@ -92,8 +112,9 @@
                 </mat-list-item>
                 <mat-divider></mat-divider>
               </ng-container>
-              <div class="d-flex justify-content-center flex-column align-items-center" *ngIf="selectedRace?.contestants.length === 0">
-                <mat-spinner ></mat-spinner>
+              <div class="d-flex justify-content-center flex-column align-items-center"
+                *ngIf="selectedRace?.contestants.length === 0">
+                <mat-spinner></mat-spinner>
                 <div class="font-italic mt-2">
                   Waiting for contestants to join...
                 </div>

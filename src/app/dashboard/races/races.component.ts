@@ -106,6 +106,9 @@ export class RacesComponent implements OnInit {
         this.show = true;
       }, 1);
     }
+    if (race.legs?.length) {
+      this.toggleExpansion(race);
+    }
   }
 
   getParsedDate(date) {
@@ -223,6 +226,16 @@ export class RacesComponent implements OnInit {
       return this.selectedRace.status === this.constants.raceStatus.waiting && this.selectedRace.contestants.length;
     }
     return false;
+  }
+
+  get filteredRaces() {
+    return this.races.filter(
+      race => !race.legOf
+    );
+  }
+
+  toggleExpansion(race) {
+    race['expanded'] = !race['expanded'];
   }
 
   ngOnDestroy(): void {
