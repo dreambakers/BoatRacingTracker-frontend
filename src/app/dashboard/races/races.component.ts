@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RaceService } from 'src/app/services/race.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { Subject } from 'rxjs';
+import { Subject, race as newRaceData } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MapsAPILoader } from '@agm/core';
 import { UtilService } from 'src/app/services/util.service';
@@ -34,18 +34,8 @@ export class RacesComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((race: any) => {
-      const updatedRace = race;
-      updatedRace.contestants.forEach(
-        contestant => {
-          this.calculateDistance(contestant);
-        }
-      );
-      const raceToUpdateIndex = this.races.findIndex(_race => _race._id === updatedRace._id);
-      this.races[raceToUpdateIndex] = updatedRace;
-      if (this.selectedRace._id === updatedRace._id) {
-        this.selectedRace = updatedRace;
-      }
+    this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((newRaceData: any) => {
+      this.updateRace(newRaceData);
     });
 
     this.emitterService.emitter.pipe(takeUntil(this.destroy$)).subscribe((emittedEvent) => {
@@ -53,6 +43,10 @@ export class RacesComponent implements OnInit {
         case this.constants.emitterKeys.raceSetup:
           this.races.push(emittedEvent.data);
           return this.selectedRace = this.races[this.races.length - 1];
+        case this.constants.emitterKeys.legSetup:
+          this.updateRace(emittedEvent.data.race);
+          this.races.push(emittedEvent.data.leg);
+          return;
       }
     });
 
@@ -82,6 +76,19 @@ export class RacesComponent implements OnInit {
     );
   }
 
+  updateRace(newRaceData) {
+    newRaceData.contestants.forEach(
+      contestant => {
+        this.calculateDistance(contestant);
+      }
+    );
+    const raceToUpdateIndex = this.races.findIndex(_race => _race._id === newRaceData._id);
+    this.races[raceToUpdateIndex] = newRaceData;
+    if (this.selectedRace._id === newRaceData._id) {
+      this.selectedRace = newRaceData;
+    }
+  }
+
   calculateDistance(contestant) {
     let distance = 0;
     let currentPoint;
@@ -105,9 +112,6 @@ export class RacesComponent implements OnInit {
       setTimeout(() => {
         this.show = true;
       }, 1);
-    }
-    if (race.legs?.length) {
-      this.toggleExpansion(race);
     }
   }
 
@@ -145,13 +149,10 @@ export class RacesComponent implements OnInit {
   }
 
   stopRace(race) {
-    this.dialogService.confirm(
-      'Are you sure?',
-      'This will stop the selected race'
-    ).subscribe(
+    this.dialogService.endRace().subscribe(
       res => {
-        if (res) {
-          this.raceService.stop(race._id).subscribe(
+        if (res && res.decision) {
+          this.raceService.stop(race._id, res.decision).subscribe(
             (res: any) => {
               if (res.success) {
                 const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
@@ -163,6 +164,31 @@ export class RacesComponent implements OnInit {
             },
             err => {
               this.utilService.openSnackBar('An error occurred while stopping the race.');
+            }
+          );
+        }
+      }
+    );
+  }
+
+  stopLeg(leg) {
+    this.dialogService.endRace().subscribe(
+      res => {
+        if (res && res.decision) {
+          this.raceService.stopLeg(leg._id, res.decision).subscribe(
+            (res: any) => {
+              if (res.success) {
+                const legToUpdateIndex = this.races.findIndex(_leg => _leg._id === res.leg._id);
+                this.races[legToUpdateIndex] = res.leg;
+                this.selectedRace = this.races[legToUpdateIndex];
+                // update parent
+                this.updateRace(res.race);
+                return this.utilService.openSnackBar('Leg stopped.');
+              }
+              this.utilService.openSnackBar('An error occurred while stopping the leg.');
+            },
+            err => {
+              this.utilService.openSnackBar('An error occurred while stopping the leg.');
             }
           );
         }
@@ -204,6 +230,14 @@ export class RacesComponent implements OnInit {
     }
   }
 
+  getLegsOfRace(race) {
+    return this.races.filter(_race => _race.legOf === race._id);
+  }
+
+  createLeg(race) {
+    this.dialogService.setupLeg(race).subscribe();
+  }
+
   get canRemove() {
     if (this.selectedRace) {
       return [
@@ -224,6 +258,13 @@ export class RacesComponent implements OnInit {
   get canStart() {
     if (this.selectedRace) {
       return this.selectedRace.status === this.constants.raceStatus.waiting && this.selectedRace.contestants.length;
+    }
+    return false;
+  }
+
+  get canCreateLegs() {
+    if (this.selectedRace) {
+      return this.selectedRace.canCreateLegs;
     }
     return false;
   }

@@ -13,12 +13,20 @@ export class RaceService {
     return this.http.post(`${constants.apiUrl}/race/create/`, race);
   }
 
+  createLeg(parentId, leg) {
+    return this.http.post(`${constants.apiUrl}/race/createLeg/${parentId}`, leg);
+  }
+
   start(raceId) {
     return this.http.post(`${constants.apiUrl}/race/start/${raceId}`, {});
   }
 
-  stop(raceId) {
-    return this.http.post(`${constants.apiUrl}/race/stop/${raceId}`, {});
+  stop(raceId, body) {
+    return this.http.post(`${constants.apiUrl}/race/stop/${raceId}`, body);
+  }
+
+  stopLeg(legId, body) {
+    return this.http.post(`${constants.apiUrl}/race/stopLeg/${legId}`, body);
   }
 
   delete(raceId) {

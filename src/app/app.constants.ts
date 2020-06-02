@@ -9,6 +9,7 @@ export const constants = {
         finished: 'finished'
     },
     emitterKeys: {
-        raceSetup: 'raceSetup'
+        raceSetup: 'raceSetup',
+        legSetup: 'legSetup'
     }
 }

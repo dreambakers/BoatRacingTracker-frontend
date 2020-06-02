@@ -8,7 +8,7 @@
             <mat-list-item [class.selected]="selectedRace._id === race._id" class="pointer d-flex"
               (click)="selectRace(race)">
               <div class="flex-grow-1 text-overflow d-flex align-items-center">
-                <mat-icon *ngIf="race.legs?.length">
+                <mat-icon *ngIf="race.legs?.length" (click)="toggleExpansion(race)">
                   {{ race.expanded ? 'expand_less' : 'expand_more' }}
                 </mat-icon>
                 {{ race.name }}
@@ -17,7 +17,7 @@
             </mat-list-item>
 
             <div class="submenu" [ngClass]="{'expanded' : race.expanded}" *ngIf="race.expanded">
-              <ng-container *ngFor="let leg of race.legs">
+              <ng-container *ngFor="let leg of getLegsOfRace(race)">
                 <mat-list-item [class.selected]="selectedRace._id === leg._id" class="pointer d-flex"
                   (click)="selectRace(leg)">
                   <div class="flex-grow-1 text-overflow d-flex align-items-center" style="padding-left: 30px;">
@@ -52,6 +52,10 @@
     <div class="px-2 pb-2">
       <mat-card class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-center">
         <div class="d-flex">
+          <div class="p-2" [class.border-right]="true">
+            <span class="font-weight-bold">ID: </span>
+            {{ selectedRace?._id }}
+          </div>
           <div class="p-2" [class.border-right]="selectedRace?.startedAt">
             <span class="font-weight-bold">Created: </span>
             {{ getParsedDate(selectedRace?.createdAt) }}
@@ -68,7 +72,12 @@
               remove_circle
             </mat-icon>
           </button>
-          <button mat-icon-button *ngIf="canStop" (click)="stopRace(selectedRace)" matTooltip="Stop race">
+          <button mat-icon-button *ngIf="canCreateLegs" (click)="createLeg(selectedRace)" matTooltip="Add leg">
+            <mat-icon class="pointer text-primary">
+              add_circle
+            </mat-icon>
+          </button>
+          <button mat-icon-button *ngIf="canStop" (click)="selectedRace.legOf ? stopLeg(selectedRace) : stopRace(selectedRace)" matTooltip="Stop race">
             <mat-icon class="pointer text-danger">
               flag
             </mat-icon>

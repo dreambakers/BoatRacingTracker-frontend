@@ -1,15 +1,15 @@
 <h1 mat-dialog-title>
-    Setup Race
+    Setup {{ parent ? 'Leg' : 'Race' }}
 </h1>
 
 <div mat-dialog-content class="border-top p-3">
     <form [formGroup]="raceForm" class="d-flex flex-column">
 
         <mat-form-field appearance="outline">
-            <mat-label>Race name</mat-label>
+            <mat-label>{{ parent ? 'Leg' : 'Race' }} name</mat-label>
             <input matInput formControlName="raceName">
             <mat-error *ngIf="f.raceName.errors">
-                Race name is required
+                {{ parent ? 'Leg' : 'Race' }} name is required
             </mat-error>
         </mat-form-field>
 
