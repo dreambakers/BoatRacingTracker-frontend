@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RaceService } from 'src/app/services/race.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { Subject } from 'rxjs';
+import { Subject, race as newRaceData } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MapsAPILoader } from '@agm/core';
 import { UtilService } from 'src/app/services/util.service';
@@ -9,6 +9,7 @@ import { EmitterService } from 'src/app/services/emitter.service';
 import { constants } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { DialogService } from 'src/app/services/dialog.service';
+import { LegService } from 'src/app/services/leg.service';
 
 @Component({
   selector: 'app-races',
@@ -19,8 +20,9 @@ export class RacesComponent implements OnInit {
 
   constants = constants;
   races = [];
-  show = true;
+  showMap = true;
   selectedRace;
+  loading = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -29,23 +31,14 @@ export class RacesComponent implements OnInit {
     private mapsAPILoader: MapsAPILoader,
     private utilService: UtilService,
     private emitterService: EmitterService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private legService: LegService
   ) { }
 
   ngOnInit(): void {
 
-    this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((race: any) => {
-      const updatedRace = race;
-      updatedRace.contestants.forEach(
-        contestant => {
-          this.calculateDistance(contestant);
-        }
-      );
-      const raceToUpdateIndex = this.races.findIndex(_race => _race._id === updatedRace._id);
-      this.races[raceToUpdateIndex] = updatedRace;
-      if (this.selectedRace._id === updatedRace._id) {
-        this.selectedRace = updatedRace;
-      }
+    this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((newRaceData: any) => {
+      this.updateRace(newRaceData);
     });
 
     this.emitterService.emitter.pipe(takeUntil(this.destroy$)).subscribe((emittedEvent) => {
@@ -53,6 +46,10 @@ export class RacesComponent implements OnInit {
         case this.constants.emitterKeys.raceSetup:
           this.races.push(emittedEvent.data);
           return this.selectedRace = this.races[this.races.length - 1];
+        case this.constants.emitterKeys.legSetup:
+          this.updateRace(emittedEvent.data.race);
+          this.races.push(emittedEvent.data.leg);
+          return;
       }
     });
 
@@ -82,6 +79,19 @@ export class RacesComponent implements OnInit {
     );
   }
 
+  updateRace(newRaceData) {
+    newRaceData.contestants.forEach(
+      contestant => {
+        this.calculateDistance(contestant);
+      }
+    );
+    const raceToUpdateIndex = this.races.findIndex(_race => _race._id === newRaceData._id);
+    this.races[raceToUpdateIndex] = newRaceData;
+    if (this.selectedRace._id === newRaceData._id) {
+      this.selectedRace = newRaceData;
+    }
+  }
+
   calculateDistance(contestant) {
     let distance = 0;
     let currentPoint;
@@ -100,12 +110,13 @@ export class RacesComponent implements OnInit {
 
   selectRace(race) {
     if (this.selectedRace._id !== race._id) {
-      this.show = false;
+      this.showMap = false;
       this.selectedRace = race;
       setTimeout(() => {
-        this.show = true;
+        this.showMap = true;
       }, 1);
     }
+    this.selectedRace.collapsed = false;
   }
 
   getParsedDate(date) {
@@ -142,13 +153,10 @@ export class RacesComponent implements OnInit {
   }
 
   stopRace(race) {
-    this.dialogService.confirm(
-      'Are you sure?',
-      'This will stop the selected race'
-    ).subscribe(
+    this.dialogService.endRace().subscribe(
       res => {
-        if (res) {
-          this.raceService.stop(race._id).subscribe(
+        if (res && res.decision) {
+          this.raceService.stop(race._id, res.decision).subscribe(
             (res: any) => {
               if (res.success) {
                 const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
@@ -167,10 +175,35 @@ export class RacesComponent implements OnInit {
     );
   }
 
+  stopLeg(leg) {
+    this.dialogService.endRace().subscribe(
+      res => {
+        if (res && res.decision) {
+          this.legService.stop(leg._id, res.decision).subscribe(
+            (res: any) => {
+              if (res.success) {
+                const legToUpdateIndex = this.races.findIndex(_leg => _leg._id === res.leg._id);
+                this.races[legToUpdateIndex] = res.leg;
+                this.selectedRace = this.races[legToUpdateIndex];
+                // update parent
+                this.updateRace(res.race);
+                return this.utilService.openSnackBar('Leg stopped.');
+              }
+              this.utilService.openSnackBar('An error occurred while stopping the leg.');
+            },
+            err => {
+              this.utilService.openSnackBar('An error occurred while stopping the leg.');
+            }
+          );
+        }
+      }
+    );
+  }
+
   deleteRace(race) {
     this.dialogService.confirm(
       'Are you sure?',
-      'This will delete the selected race'
+      `This will delete the selected race ${race.legs.length ? ' and all legs associated with it' : ''}`
     ).subscribe(
       res => {
         if (res) {
@@ -178,7 +211,7 @@ export class RacesComponent implements OnInit {
             (res: any) => {
               if (res.success) {
                 this.races = this.races.filter(_race => _race._id !== race._id);
-                this.selectedRace = this.races[0];
+                this.selectedRace = this.races.length ? this.races[0] : null;
                 return this.utilService.openSnackBar('Race deleted.');
               }
               this.utilService.openSnackBar('An error occurred while deleting the race.');
@@ -199,6 +232,14 @@ export class RacesComponent implements OnInit {
       });
       return this.selectedRace.contestants;
     }
+  }
+
+  getLegsOfRace(race) {
+    return this.races.filter(_race => _race.legOf === race._id);
+  }
+
+  createLeg(race) {
+    this.dialogService.setupLeg(race).subscribe();
   }
 
   get canRemove() {
@@ -223,6 +264,28 @@ export class RacesComponent implements OnInit {
       return this.selectedRace.status === this.constants.raceStatus.waiting && this.selectedRace.contestants.length;
     }
     return false;
+  }
+
+  get canCreateLegs() {
+    if (this.selectedRace) {
+      return this.selectedRace.canCreateLegs;
+    }
+    return false;
+  }
+
+  get filteredRaces() {
+    return this.races.filter(
+      race => !race.legOf
+    );
+  }
+
+  get noRacesAvailable() {
+    return !this.loading && !this.filteredRaces.length;
+  }
+
+  toggleExpansion(race, event) {
+    event.stopPropagation();
+    race['collapsed'] = !race['collapsed'];
   }
 
   ngOnDestroy(): void {

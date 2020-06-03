@@ -42,6 +42,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { EndRaceComponent } from './dialogs/end-race/end-race.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SetupRaceComponent,
     RaceStatusComponent,
     ConfirmComponent,
+    EndRaceComponent,
   ],
   imports: [
     BrowserModule,

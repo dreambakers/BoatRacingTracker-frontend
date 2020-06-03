@@ -1,0 +1,25 @@
+<div mat-dialog-title class="d-flex justify-content-between">
+    <div>
+        End Race/Leg
+    </div>
+    <div (click)="dismiss()" class="pointer">
+        <span aria-hidden="true">&times;</span>
+    </div>
+
+
+</div>
+
+<div mat-dialog-content>
+    <p>
+        Clicking on the end race button will end the race and disable any further leg creation. Clicking on end leg, will end the current leg and allow creation of a new one.
+    </p>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="onEndLeg()">
+        End Leg
+    </button>
+    <button mat-raised-button class="bg-danger text-white" (click)="onEndRace()">
+        End Race
+    </button>
+</div>

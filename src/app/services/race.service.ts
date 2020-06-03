@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { constants } from '../app.constants';
 
 @Injectable({
@@ -17,8 +17,8 @@ export class RaceService {
     return this.http.post(`${constants.apiUrl}/race/start/${raceId}`, {});
   }
 
-  stop(raceId) {
-    return this.http.post(`${constants.apiUrl}/race/stop/${raceId}`, {});
+  stop(raceId, body) {
+    return this.http.post(`${constants.apiUrl}/race/stop/${raceId}`, body);
   }
 
   delete(raceId) {
