@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -13,8 +13,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SetupRaceComponent } from './dialogs/setup-race/setup-race.component';
 import { RaceStatusComponent } from './common/race-status/race-status.component';
 import { ConfirmComponent } from './dialogs/confirm/confirm.component';
+import { EndRaceComponent } from './dialogs/end-race/end-race.component';
 
 import { AgmCoreModule } from '@agm/core';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 import { MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -42,7 +44,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { EndRaceComponent } from './dialogs/end-race/end-race.component';
 
 @NgModule({
   declarations: [
@@ -96,8 +97,10 @@ import { EndRaceComponent } from './dialogs/end-race/end-race.component';
     MatExpansionModule,
     MatSidenavModule,
     MatToolbarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgxSpinnerModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -10,6 +10,7 @@ import { constants } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LegService } from 'src/app/services/leg.service';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-races',
@@ -32,10 +33,13 @@ export class RacesComponent implements OnInit {
     private utilService: UtilService,
     private emitterService: EmitterService,
     private dialogService: DialogService,
-    private legService: LegService
+    private legService: LegService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
+    this.loading = true;
+    this.spinner.show();
 
     this.socketSerice.listen('update').pipe(takeUntil(this.destroy$)).subscribe((newRaceData: any) => {
       this.updateRace(newRaceData);
@@ -68,15 +72,23 @@ export class RacesComponent implements OnInit {
                 );
               }
             );
+            this.hideSpinner();
           });
         } else {
+          this.hideSpinner();
           this.utilService.openSnackBar('Error getting races.');
         }
       },
       err => {
+        this.hideSpinner();
         this.utilService.openSnackBar('Error getting races.');
       }
     );
+  }
+
+  hideSpinner() {
+    this.loading = false;
+    this.spinner.hide();
   }
 
   updateRace(newRaceData) {
@@ -280,7 +292,7 @@ export class RacesComponent implements OnInit {
   }
 
   get noRacesAvailable() {
-    return !this.loading && !this.filteredRaces.length;
+    return !this.filteredRaces.length;
   }
 
   toggleExpansion(race, event) {
