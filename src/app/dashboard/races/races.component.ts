@@ -20,7 +20,7 @@ export class RacesComponent implements OnInit {
 
   constants = constants;
   races = [];
-  show = true;
+  showMap = true;
   selectedRace;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -109,12 +109,13 @@ export class RacesComponent implements OnInit {
 
   selectRace(race) {
     if (this.selectedRace._id !== race._id) {
-      this.show = false;
+      this.showMap = false;
       this.selectedRace = race;
       setTimeout(() => {
-        this.show = true;
+        this.showMap = true;
       }, 1);
     }
+    this.selectedRace.collapsed = false;
   }
 
   getParsedDate(date) {
@@ -277,8 +278,9 @@ export class RacesComponent implements OnInit {
     );
   }
 
-  toggleExpansion(race) {
-    race['expanded'] = !race['expanded'];
+  toggleExpansion(race, event) {
+    event.stopPropagation();
+    race['collapsed'] = !race['collapsed'];
   }
 
   ngOnDestroy(): void {
