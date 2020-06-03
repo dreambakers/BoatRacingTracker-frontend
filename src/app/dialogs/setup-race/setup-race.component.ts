@@ -5,6 +5,7 @@ import { RaceService } from 'src/app/services/race.service';
 import { UtilService } from 'src/app/services/util.service';
 import { EmitterService } from 'src/app/services/emitter.service';
 import { constants } from 'src/app/app.constants';
+import { LegService } from 'src/app/services/leg.service';
 
 @Component({
   selector: 'app-setup-race',
@@ -26,6 +27,7 @@ export class SetupRaceComponent implements OnInit {
     private raceService: RaceService,
     private utilService: UtilService,
     private emitterService: EmitterService,
+    private legService: LegService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
@@ -59,7 +61,7 @@ export class SetupRaceComponent implements OnInit {
       laps: this.raceForm.value.laps,
       legOf: this.parent._id
     }
-    this.raceService.createLeg(this.parent._id, newLeg).subscribe(
+    this.legService.create(this.parent._id, newLeg).subscribe(
       (res : any) => {
         if (res.success) {
           this.utilService.openSnackBar('Leg setup successful!');

@@ -9,6 +9,7 @@ import { EmitterService } from 'src/app/services/emitter.service';
 import { constants } from 'src/app/app.constants';
 import * as moment from 'moment';
 import { DialogService } from 'src/app/services/dialog.service';
+import { LegService } from 'src/app/services/leg.service';
 
 @Component({
   selector: 'app-races',
@@ -29,7 +30,8 @@ export class RacesComponent implements OnInit {
     private mapsAPILoader: MapsAPILoader,
     private utilService: UtilService,
     private emitterService: EmitterService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private legService: LegService
   ) { }
 
   ngOnInit(): void {
@@ -175,7 +177,7 @@ export class RacesComponent implements OnInit {
     this.dialogService.endRace().subscribe(
       res => {
         if (res && res.decision) {
-          this.raceService.stopLeg(leg._id, res.decision).subscribe(
+          this.legService.stop(leg._id, res.decision).subscribe(
             (res: any) => {
               if (res.success) {
                 const legToUpdateIndex = this.races.findIndex(_leg => _leg._id === res.leg._id);
