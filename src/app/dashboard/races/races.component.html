@@ -36,6 +36,9 @@
             </div>
             <mat-divider></mat-divider>
           </ng-container>
+          <mat-list-item *ngIf="noRacesAvailable">
+            No races available
+          </mat-list-item>
         </mat-list>
       </mat-card>
     </div>
@@ -47,91 +50,110 @@
 </div>
 
 <ng-template #raceDetails>
-
   <div class="h-100 d-flex flex-column">
-    <div class="px-2 pb-2">
-      <mat-card class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <div class="d-flex">
-          <div class="p-2" [class.border-right]="true">
-            <span class="font-weight-bold">ID: </span>
-            {{ selectedRace?._id }}
-          </div>
-          <div class="p-2" [class.border-right]="selectedRace?.startedAt">
-            <span class="font-weight-bold">Created: </span>
-            {{ getParsedDate(selectedRace?.createdAt) }}
-          </div>
-          <div class="p-2" *ngIf="selectedRace?.startedAt">
-            <span class="font-weight-bold">Started: </span>
-            {{ getParsedDate(selectedRace.startedAt) }}
-          </div>
-        </div>
+    <mat-card class="h-100 m-2 d-flex flex-column justify-content-center align-items-center" *ngIf="noRacesAvailable; else raceDetailsAvailable">
+      <mat-icon style="font-size: 4rem; width: 4rem; height: 4rem">info</mat-icon>
+      <div class="mt-2">
+        This section will become available once a race is selected
+      </div>
+    </mat-card>
 
-        <div>
-          <button mat-icon-button *ngIf="canRemove" (click)="deleteRace(selectedRace)" matTooltip="Delete race">
-            <mat-icon class="pointer text-danger">
-              remove_circle
-            </mat-icon>
-          </button>
-          <button mat-icon-button *ngIf="canCreateLegs" (click)="createLeg(selectedRace)" matTooltip="Add leg">
-            <mat-icon class="pointer text-primary">
-              add_circle
-            </mat-icon>
-          </button>
-          <button mat-icon-button *ngIf="canStop" (click)="selectedRace.legOf ? stopLeg(selectedRace) : stopRace(selectedRace)" matTooltip="Stop race">
-            <mat-icon class="pointer text-danger">
-              flag
-            </mat-icon>
-          </button>
-          <button mat-icon-button *ngIf="canStart" (click)="startRace(selectedRace)" matTooltip="Start race">
-            <mat-icon class="pointer text-primary">
-              play_circle_filled
-            </mat-icon>
-          </button>
-        </div>
-      </mat-card>
-    </div>
+    <ng-template #raceDetailsAvailable>
+      <div class="px-2 pb-2">
+        <mat-card class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-center">
+          <div class="d-flex">
+            <div class="p-2" [class.border-right]="true">
+              <span class="font-weight-bold">ID: </span>
+              {{ selectedRace?._id }}
+            </div>
+            <div class="p-2" [class.border-right]="selectedRace?.startedAt">
+              <span class="font-weight-bold">Created: </span>
+              {{ getParsedDate(selectedRace?.createdAt) }}
+            </div>
+            <div class="p-2" *ngIf="selectedRace?.startedAt">
+              <span class="font-weight-bold">Started: </span>
+              {{ getParsedDate(selectedRace.startedAt) }}
+            </div>
+          </div>
 
-    <div class="flex-fill">
-      <div class="d-flex flex-column flex-md-row h-100">
-        <div class="flex-fill p-2">
-          <mat-card style="min-height: 100%; height: 500px">
-            <app-map [race]="selectedRace"
-              *ngIf="selectedRace && showMap && selectedRace.contestants.length; else noContestants"></app-map>
-            <ng-template #noContestants>
-              <div class="d-flex justify-content-center align-items-center h-100">
-                The map will become available once the contestants have joined.
-              </div>
-            </ng-template>
-          </mat-card>
-        </div>
+          <div>
+            <button
+              mat-icon-button
+              *ngIf="canRemove"
+              (click)="deleteRace(selectedRace)"
+              matTooltip="Delete {{ selectedRace.legOf ? 'leg' : 'race'}}">
+              <mat-icon class="pointer text-danger">
+                remove_circle
+              </mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="canCreateLegs" (click)="createLeg(selectedRace)" matTooltip="Add leg">
+              <mat-icon class="pointer text-primary">
+                add_circle
+              </mat-icon>
+            </button>
+            <button
+              mat-icon-button *ngIf="canStop"
+              (click)="selectedRace.legOf ? stopLeg(selectedRace) : stopRace(selectedRace)"
+              matTooltip="Stop {{ selectedRace.legOf ? 'leg' : 'race'}}">
+              <mat-icon class="pointer text-danger">
+                flag
+              </mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              *ngIf="canStart"
+              (click)="startRace(selectedRace)"
+              matTooltip="Start {{ selectedRace.legOf ? 'leg' : 'race'}}">
+              <mat-icon class="pointer text-primary">
+                play_circle_filled
+              </mat-icon>
+            </button>
+          </div>
+        </mat-card>
+      </div>
 
-        <div class="w-25 contestants overflow-auto h-100 p-2">
-          <mat-card class="min-h-100 p-0">
-            <h3 class="font-weight-bold p-3 border-bottom">Contestants</h3>
-            <mat-list>
-              <ng-container *ngFor="let contestant of getSortedContestants(); let i = index;">
-                <mat-list-item class="d-flex">
-                  <div class="flex-grow-1 text-overflow">
-                    <span class="font-weight-bold">#{{i + 1}}</span>
-                    {{ contestant.name }}
-                  </div>
-                  <div>
-                    {{ contestant.distance }} km
-                  </div>
-                </mat-list-item>
-                <mat-divider></mat-divider>
-              </ng-container>
-              <div class="d-flex justify-content-center flex-column align-items-center"
-                *ngIf="selectedRace?.contestants.length === 0">
-                <mat-spinner></mat-spinner>
-                <div class="font-italic mt-2">
-                  Waiting for contestants to join...
+      <div class="flex-fill">
+        <div class="d-flex flex-column flex-md-row h-100">
+          <div class="flex-fill p-2">
+            <mat-card style="min-height: 100%; height: 500px">
+              <app-map [race]="selectedRace"
+                *ngIf="selectedRace && showMap && selectedRace.contestants.length; else noContestants"></app-map>
+              <ng-template #noContestants>
+                <div class="d-flex justify-content-center align-items-center h-100">
+                  The map will become available once the contestants have joined.
                 </div>
-              </div>
-            </mat-list>
-          </mat-card>
+              </ng-template>
+            </mat-card>
+          </div>
+
+          <div class="w-25 contestants overflow-auto h-100 p-2">
+            <mat-card class="min-h-100 p-0">
+              <h3 class="font-weight-bold p-3 border-bottom">Contestants</h3>
+              <mat-list>
+                <ng-container *ngFor="let contestant of getSortedContestants(); let i = index;">
+                  <mat-list-item class="d-flex">
+                    <div class="flex-grow-1 text-overflow">
+                      <span class="font-weight-bold">#{{i + 1}}</span>
+                      {{ contestant.name }}
+                    </div>
+                    <div>
+                      {{ contestant.distance }} km
+                    </div>
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                </ng-container>
+                <div class="d-flex justify-content-center flex-column align-items-center"
+                  *ngIf="selectedRace?.contestants.length === 0">
+                  <mat-spinner></mat-spinner>
+                  <div class="font-italic mt-2 p-2">
+                    Waiting for contestants to join...
+                  </div>
+                </div>
+              </mat-list>
+            </mat-card>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-template>
   </div>
 </ng-template>

@@ -22,6 +22,7 @@ export class RacesComponent implements OnInit {
   races = [];
   showMap = true;
   selectedRace;
+  loading = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -202,7 +203,7 @@ export class RacesComponent implements OnInit {
   deleteRace(race) {
     this.dialogService.confirm(
       'Are you sure?',
-      'This will delete the selected race'
+      `This will delete the selected race ${race.legs.length ? ' and all legs associated with it' : ''}`
     ).subscribe(
       res => {
         if (res) {
@@ -210,7 +211,7 @@ export class RacesComponent implements OnInit {
             (res: any) => {
               if (res.success) {
                 this.races = this.races.filter(_race => _race._id !== race._id);
-                this.selectedRace = this.races[0];
+                this.selectedRace = this.races.length ? this.races[0] : null;
                 return this.utilService.openSnackBar('Race deleted.');
               }
               this.utilService.openSnackBar('An error occurred while deleting the race.');
@@ -276,6 +277,10 @@ export class RacesComponent implements OnInit {
     return this.races.filter(
       race => !race.legOf
     );
+  }
+
+  get noRacesAvailable() {
+    return !this.loading && !this.filteredRaces.length;
   }
 
   toggleExpansion(race, event) {
