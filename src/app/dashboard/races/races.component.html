@@ -1,4 +1,4 @@
-<div class="container-fluid h-100" *ngIf="!loading">
+<div class="h-100" *ngIf="!loading">
   <div class="d-flex h-100">
     <div class="flex-fill overflow-auto h-100">
       <mat-card class="min-h-100 p-0">
@@ -131,13 +131,18 @@
               <h3 class="font-weight-bold p-3 border-bottom">Contestants</h3>
               <mat-list>
                 <ng-container *ngFor="let contestant of getSortedContestants(); let i = index;">
-                  <mat-list-item class="d-flex">
-                    <div class="flex-grow-1 text-overflow">
-                      <span class="font-weight-bold">#{{i + 1}}</span>
-                      {{ contestant.name }}
-                    </div>
-                    <div>
-                      {{ contestant.distance }} km
+                  <mat-list-item
+                    (click)="selectContestant(contestant)"
+                    [class.selected]="selectedRace?.selectedContestant?._id === contestant._id"
+                    class="pointer">
+                    <div class="d-flex w-100">
+                      <div class="flex-grow-1 text-overflow">
+                        <span class="font-weight-bold">#{{i + 1}}</span>
+                        {{ contestant.name }}
+                      </div>
+                      <div>
+                        {{ contestant.distance }} km
+                      </div>
                     </div>
                   </mat-list-item>
                   <mat-divider></mat-divider>

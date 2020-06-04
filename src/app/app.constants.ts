@@ -10,6 +10,7 @@ export const constants = {
     },
     emitterKeys: {
         raceSetup: 'raceSetup',
-        legSetup: 'legSetup'
+        legSetup: 'legSetup',
+        contestantSelected: 'contestantSelected'
     }
 }

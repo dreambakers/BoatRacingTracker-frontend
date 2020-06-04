@@ -10,7 +10,7 @@
         [title]="contestant.name"
         [latitude]="contestant.locationHistory[contestant.locationHistory.length - 1].lat"
         [longitude]="contestant.locationHistory[contestant.locationHistory.length - 1].lng"
-        iconUrl="http://www.myiconfinder.com/uploads/iconsets/32-32-d8d329b704d34cf035a25811e32ba733-boat.png">
+        [iconUrl]="getSymbolForContestant(contestant)">
       </agm-marker>
 
       <agm-polyline>

@@ -62,6 +62,7 @@ export class RacesComponent implements OnInit {
         if (res.success) {
           this.races = res.races;
           this.selectedRace = this.races[0];
+          this.selectedRace.contestants.length && (this.selectContestant(this.selectedRace.contestants[0]));
           this.mapsAPILoader.load().then(() => {
             this.races.forEach(
               race => {
@@ -124,6 +125,7 @@ export class RacesComponent implements OnInit {
     if (this.selectedRace._id !== race._id) {
       this.showMap = false;
       this.selectedRace = race;
+      this.selectedRace.contestants.length && (this.selectContestant(this.selectedRace.contestants[0]));
       setTimeout(() => {
         this.showMap = true;
       }, 1);
@@ -293,6 +295,11 @@ export class RacesComponent implements OnInit {
 
   get noRacesAvailable() {
     return !this.filteredRaces.length;
+  }
+
+  selectContestant(contestant) {
+    this.selectedRace.selectedContestant = contestant;
+    this.emitterService.emit(this.constants.emitterKeys.contestantSelected, contestant);
   }
 
   toggleExpansion(race, event) {
