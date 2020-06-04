@@ -105,6 +105,7 @@ export class RacesComponent implements OnInit {
     }
   }
 
+  // TODO: move this to the API
   calculateDistance(contestant) {
     let distance = 0;
     let currentPoint;
@@ -150,9 +151,7 @@ export class RacesComponent implements OnInit {
           this.raceService.start(race._id).subscribe(
             (res: any) => {
               if (res.success) {
-                const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
-                this.races[selectedRaceIndex] = res.race;
-                this.selectedRace = this.races[selectedRaceIndex];
+                this.updateRace(res.race);
                 return this.utilService.openSnackBar('Race started.');
               }
               this.utilService.openSnackBar('An error occurred while starting the race.');
@@ -173,9 +172,7 @@ export class RacesComponent implements OnInit {
           this.raceService.stop(race._id, res.decision).subscribe(
             (res: any) => {
               if (res.success) {
-                const selectedRaceIndex = this.races.findIndex(_race => _race._id === race._id);
-                this.races[selectedRaceIndex] = res.race;
-                this.selectedRace = this.races[selectedRaceIndex];
+                this.updateRace(res.race);
                 return this.utilService.openSnackBar('Race stopped.');
               }
               this.utilService.openSnackBar('An error occurred while stopping the race.');
@@ -196,10 +193,7 @@ export class RacesComponent implements OnInit {
           this.legService.stop(leg._id, res.decision).subscribe(
             (res: any) => {
               if (res.success) {
-                const legToUpdateIndex = this.races.findIndex(_leg => _leg._id === res.leg._id);
-                this.races[legToUpdateIndex] = res.leg;
-                this.selectedRace = this.races[legToUpdateIndex];
-                // update parent
+                this.updateRace(res.leg);
                 this.updateRace(res.race);
                 return this.utilService.openSnackBar('Leg stopped.');
               }
@@ -256,6 +250,16 @@ export class RacesComponent implements OnInit {
     this.dialogService.setupLeg(race).subscribe();
   }
 
+  selectContestant(contestant) {
+    this.selectedRace.selectedContestant = contestant;
+    this.emitterService.emit(this.constants.emitterKeys.contestantSelected, contestant);
+  }
+
+  toggleExpansion(race, event) {
+    event.stopPropagation();
+    race['collapsed'] = !race['collapsed'];
+  }
+
   get canRemove() {
     if (this.selectedRace) {
       return [
@@ -295,16 +299,6 @@ export class RacesComponent implements OnInit {
 
   get noRacesAvailable() {
     return !this.filteredRaces.length;
-  }
-
-  selectContestant(contestant) {
-    this.selectedRace.selectedContestant = contestant;
-    this.emitterService.emit(this.constants.emitterKeys.contestantSelected, contestant);
-  }
-
-  toggleExpansion(race, event) {
-    event.stopPropagation();
-    race['collapsed'] = !race['collapsed'];
   }
 
   ngOnDestroy(): void {
