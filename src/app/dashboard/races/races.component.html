@@ -143,8 +143,11 @@
                           {{ contestant.name }}
                         </div>
                       </div>
-                      <div class="contestant-distance text-right">
-                        {{ contestant.distance }} km
+                      <div
+                        class="contestant-distance text-right"
+                        matTooltip="Total distance travelled: {{contestant.distance}}"
+                        matTooltipPosition="above">
+                        {{ contestant.speed }} km/h
                       </div>
                     </div>
                   </mat-list-item>

@@ -11,6 +11,11 @@
         [latitude]="contestant.locationHistory[contestant.locationHistory.length - 1].lat"
         [longitude]="contestant.locationHistory[contestant.locationHistory.length - 1].lng"
         [iconUrl]="getSymbolForContestant(contestant)">
+        <agm-info-window>
+          <h4 class="m-0"><span class="font-weight-bold">Name:</span> {{ contestant.name }}</h4>
+          <h4 class="m-0"><span class="font-weight-bold">Speed:</span> {{ contestant.speed }} km/h</h4>
+          <h4 class="m-0"><span class="font-weight-bold">Distance:</span> {{ contestant.distance }} km</h4>
+        </agm-info-window>
       </agm-marker>
 
       <agm-polyline [strokeColor]="contestant.color">

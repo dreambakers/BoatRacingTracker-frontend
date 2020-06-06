@@ -69,6 +69,7 @@ export class RacesComponent implements OnInit {
                 race.contestants.forEach(
                   contestant => {
                     this.calculateDistance(contestant);
+                    this.calculateSpeed(contestant);
                   }
                 );
               }
@@ -96,6 +97,7 @@ export class RacesComponent implements OnInit {
     newRaceData.contestants.forEach(
       contestant => {
         this.calculateDistance(contestant);
+        this.calculateSpeed(contestant);
       }
     );
     const raceToUpdateIndex = this.races.findIndex(_race => _race._id === newRaceData._id);
@@ -120,6 +122,22 @@ export class RacesComponent implements OnInit {
     }
     distance = + (distance / 1000).toFixed(2);
     contestant['distance'] = distance;
+  }
+
+  calculateSpeed(contestant) {
+    let speed = 0;
+    if (contestant.locationHistory?.length && contestant.locationHistory.length >= 2) {
+      const totalPoints = contestant.locationHistory.length;
+      const currentPoint = new google.maps.LatLng(contestant.locationHistory[totalPoints - 1].lat, contestant.locationHistory[totalPoints - 1].lng);
+      const previousPoint = new google.maps.LatLng(contestant.locationHistory[totalPoints - 2].lat, contestant.locationHistory[totalPoints - 2].lng);
+      const distance = google.maps.geometry.spherical.computeDistanceBetween(currentPoint, previousPoint);
+      const timeDifference = moment(contestant.locationHistory[totalPoints - 1].time).diff(moment(contestant.locationHistory[totalPoints - 2]));
+      if (!isNaN(timeDifference)) {
+        speed = (distance / (timeDifference/(1000 * 60 * 60)));
+      }
+    }
+    contestant.speed = speed.toFixed(2);
+    return contestant.speed;
   }
 
   selectRace(race) {
