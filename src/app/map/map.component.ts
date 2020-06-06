@@ -36,10 +36,11 @@ export class MapComponent implements OnInit {
     this.race.contestants.forEach(contestant => {
       contestant['symbol'] = {
         path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-        strokeColor: 'black',
+        strokeColor: contestant.color,
         rotation: 0,
-        scale: 2,
-        fillOpacity: 1
+        scale: 4,
+        fillOpacity: 1,
+        fillColor: 'white',
       }
     });
 
@@ -57,7 +58,7 @@ export class MapComponent implements OnInit {
       const totalPoints = contestant.locationHistory.length;
       const prevPoint = new google.maps.LatLng(contestant.locationHistory[totalPoints - 2].lat, contestant.locationHistory[totalPoints - 2].lng);
       const currentPoint = new google.maps.LatLng(contestant.locationHistory[totalPoints - 1].lat, contestant.locationHistory[totalPoints - 1].lng);
-      rotationAngle = google.maps.geometry.spherical.computeHeading(prevPoint, currentPoint);
+      rotationAngle = google.maps.geometry.spherical.computeHeading(currentPoint, prevPoint);
     }
     contestant.symbol.rotation = rotationAngle;
     return contestant.symbol;

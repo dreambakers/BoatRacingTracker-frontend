@@ -13,7 +13,7 @@
         [iconUrl]="getSymbolForContestant(contestant)">
       </agm-marker>
 
-      <agm-polyline>
+      <agm-polyline [strokeColor]="contestant.color">
         <agm-polyline-point
           [latitude]="coordinates.lat"
           [longitude]="coordinates.lng"
