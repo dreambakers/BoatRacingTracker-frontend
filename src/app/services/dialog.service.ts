@@ -17,7 +17,7 @@ export class DialogService {
   confirm(title, message): Observable<any> {
     const dialogData = new ConfirmDialogModel(title, message);
     const dialogRef = this.dialog.open(ConfirmComponent, {
-      minWidth: "400px",
+      width: "400px",
       data: dialogData
     });
     return dialogRef.afterClosed();
@@ -25,7 +25,7 @@ export class DialogService {
 
   setupRace(): Observable<any> {
     const dialogRef = this.dialog.open(SetupRaceComponent, {
-      minWidth: "400px",
+      width: "400px",
     });
     return dialogRef.afterClosed();
   }
@@ -40,7 +40,7 @@ export class DialogService {
 
   endRace(): Observable<any> {
     const dialogRef = this.dialog.open(EndRaceComponent, {
-      minWidth: "400px",
+      maxWidth: "500px"
     });
     return dialogRef.afterClosed();
   }
