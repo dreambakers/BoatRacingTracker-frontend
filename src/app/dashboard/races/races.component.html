@@ -11,7 +11,9 @@
                 <mat-icon *ngIf="race.legs?.length" (click)="toggleExpansion(race, $event)" class="mr-1">
                   {{ race.collapsed ? 'expand_more' : 'expand_less' }}
                 </mat-icon>
-                {{ race.name }}
+                <div class="text-overflow">
+                  {{ race.name }}
+                </div>
               </div>
               <app-race-status [race]="race"></app-race-status>
             </mat-list-item>
@@ -21,7 +23,9 @@
                 <mat-list-item [class.selected]="selectedRace._id === leg._id" class="pointer d-flex"
                   (click)="selectRace(leg)">
                   <div class="flex-grow-1 text-overflow d-flex align-items-center" style="padding-left: 30px;">
+                    <div class="text-overflow">
                     {{ leg.name }}
+                    </div>
                   </div>
                   <app-race-status [race]="leg"></app-race-status>
                 </mat-list-item>
@@ -145,7 +149,7 @@
                       </div>
                       <div
                         class="contestant-distance text-right"
-                        matTooltip="Total distance travelled: {{contestant.distance}}"
+                        matTooltip="Total distance travelled: {{contestant.distance}} km"
                         matTooltipPosition="above">
                         {{ contestant.speed }} km/h
                       </div>

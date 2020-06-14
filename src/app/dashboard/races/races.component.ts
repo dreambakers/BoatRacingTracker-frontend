@@ -229,7 +229,7 @@ export class RacesComponent implements OnInit {
   deleteRace(race) {
     this.dialogService.confirm(
       'Are you sure?',
-      `This will delete the selected race ${race.legs.length ? ' and all legs associated with it' : ''}`
+      `This will delete the selected race ${race.legs?.length ? ' and all legs associated with it' : ''}`
     ).subscribe(
       res => {
         if (res) {
